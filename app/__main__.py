@@ -14,7 +14,7 @@ class State:
 @bottle.post('/start')
 def start():
     State.solver = PacHackSolver()
-    return "erste platz"
+    return "1. Platz"
 
 @bottle.post('/chooseAction')
 def move():
