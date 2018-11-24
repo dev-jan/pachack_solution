@@ -1,4 +1,4 @@
-class NearFood:
+class PointOfInterest:
     def __init__(self, x, y, path):
         self.x = x
         self.y = y
