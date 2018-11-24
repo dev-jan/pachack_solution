@@ -37,12 +37,13 @@ class Pathfinder:
                     PublicFields.EMPTY: 0,
                     PublicFields.FOOD: 0,
                     PublicFields.CAPSULE: 0,
-                    'X': 0,
-                    'L': 1,
-                    'E': 1
+                    PublicFields.OURBOT: 0,
+                    PublicFields.ENEMY_WEAK: 0,
+                    PublicFields.ENEMY: 1
                 }
                 maze[newY].append(switcher.get(field, 1))
             newY = newY + 1
+
         return maze
 
     def maze2graph(self, maze):

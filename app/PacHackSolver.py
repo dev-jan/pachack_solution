@@ -29,7 +29,7 @@ class PacHackSolver:
             self.setInitialState(gState)
 
         self.improveMap(gState)
-        #self.printStateNice(gState)
+        self.printStateNice(gState)
         if (self.eatedFood > 0):
             print("Food in progress: " + str(self.eatedFood))
         
@@ -39,8 +39,10 @@ class PacHackSolver:
 
         target = None
         pathToNearestFood = self.findNearestEatableFood(gState)
+        pathToNearestAttackableEnemy = self.findNearestAttackableEnemie(gState)
+        print("Path to nearest enemy: " + str(pathToNearestAttackableEnemy))
         if (self.isPositionInHome(ourPosition)):
-            print("We are Home")
+            print("HOME MODE")
             self.eatedFood = 0
         if (ourPosition == self.lastFoodTargetPosition):
             self.eatedFood = self.eatedFood + 1
@@ -51,13 +53,18 @@ class PacHackSolver:
             if (type(pathToNearestFood) is PointOfInterest):
                 self.lastFoodTargetPosition = (pathToNearestFood.x, pathToNearestFood.y)
                 target = pathToNearestFood
+                print("FOOD MODE")
 
+        # attack mode
+        if (pathToNearestAttackableEnemy is not None and 
+                len(pathToNearestAttackableEnemy.path) < len(pathToNearestFood.path)):
+            target = pathToNearestAttackableEnemy
+            print("ATTACK MODE")
 
         pathfinder = Pathfinder()
         if (type(target) is PointOfInterest):
             path = target.path
         else:
-
             path = pathfinder.find_path_astar(pathfinder.game2Maze(gState), ourPosition, target)
         print("Target path: " + str(path))
         return ReturnDirections.getDirectionForShortcut(path[0])
@@ -94,16 +101,45 @@ class PacHackSolver:
         ourPlayer = gState.publicPlayers[gState.agent_id]
         ourPosition = (int(ourPlayer['position'][0]), int(Pathfinder.reverseYCoordinate(len(gState.gameField), ourPlayer['position'][1])))
 
-        x = self.gameFieldsSplitPoint - 1
+        x = self.gameFieldsSplitPoint
         if (self.isLeftOurHomeSide):
-            x = self.gameFieldsSplitPoint
+            x = self.gameFieldsSplitPoint - 1
         
         for y in range(len(gState.gameField)):
             if (PublicFields.WALL != gState.gameField[y][x]):
                 homePoint = PointOfInterest(x, y, pathfinder.find_path_astar(generatedMaze, ourPosition, (x, y)))
                 homePoints.append(homePoint)
 
+        if (not homePoints):
+            return None
         return min(homePoints, key=lambda x:len(x.path))
+
+    def findNearestAttackableEnemie(self, gState):
+        enemies = []
+        pathfinder = Pathfinder()
+        generatedMaze = pathfinder.game2Maze(gState)
+        ourPlayer = gState.publicPlayers[gState.agent_id]
+        ourPosition = (int(ourPlayer['position'][0]), int(Pathfinder.reverseYCoordinate(len(gState.gameField), ourPlayer['position'][1])))
+
+        if (self.isLeftOurHomeSide):
+            for x in range(0, self.gameFieldsSplitPoint - 1):
+                for y in range(len(gState.gameField)):
+                    if (PublicFields.ENEMY == gState.gameField[y][x]):
+                        enemie = PointOfInterest(x, y, pathfinder.find_path_astar(generatedMaze, ourPosition, (x,y)))
+                        print("Enemie: " + str(enemie))
+                        if (enemie.path is not None):
+                            enemies.append(enemie)
+        else:
+            for x in range(self.gameFieldsSplitPoint, len(gState.gameField[0])):
+                for y in range(len(gState.gameField)):
+                   if (PublicFields.ENEMY == gState.gameField[y][x]):
+                        enemie = PointOfInterest(x, y, pathfinder.find_path_astar(generatedMaze, ourPosition, (x,y)))
+                        if (enemie.path is not None):
+                            enemies.append(enemie)
+            
+        if (not enemies):
+            return None
+        return min(enemies, key=lambda x:len(x.path))
 
     def isPositionInHome(self, position):
         if (self.isLeftOurHomeSide):

@@ -25,4 +25,7 @@ class PublicFields:
     WALL = "%"
     FOOD = "°"
     CAPSULE = "o"
+    ENEMY = "E"
+    ENEMY_WEAK = "L"
+    OURBOT = "X"
 
