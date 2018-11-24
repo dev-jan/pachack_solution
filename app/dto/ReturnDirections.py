@@ -27,3 +27,14 @@ class ReturnDirections():
         return random.choice(
             [ReturnDirections.SOUTH, ReturnDirections.NORTH, ReturnDirections.EAST, ReturnDirections.WEST,
              ReturnDirections.STOP])
+
+    # shortname = N, W, E, S
+    @classmethod
+    def getDirectionForShortcut(cls, shortname):
+        switcher = {
+            'N': ReturnDirections.NORTH,
+            'S': ReturnDirections.SOUTH,
+            'W': ReturnDirections.WEST,
+            'E': ReturnDirections.EAST
+        }
+        return switcher.get(shortname, ReturnDirections.STOP)
