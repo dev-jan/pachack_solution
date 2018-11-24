@@ -7,7 +7,6 @@ class Pathfinder:
     #  1 = Impossible field (wall)
     #  example for position start = (1, 1)
     def find_path_astar(self, maze, start, goal):
-        print("Goal: " + str(goal))
         start = (start[1], start[0])
         goal = (goal[1], goal[0])
         pr_queue = []

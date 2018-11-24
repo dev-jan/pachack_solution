@@ -1,6 +1,7 @@
 import random
 import bottle
 import os
+import time
 
 from app.dto.PublicGameState import PublicGameState
 from app.dto.PublicPlayer import PublicPlayer
@@ -13,12 +14,16 @@ class State:
 @bottle.post('/start')
 def start():
     State.solver = PacHackSolver()
-    return "SoVollFancy"
+    return "erste platz"
 
 @bottle.post('/chooseAction')
 def move():
+    start_time = time.time()
     data = PublicGameState(ext_dict=bottle.request.json)
-    return State.solver.getNextDirection(data)
+    nextDirection = State.solver.getNextDirection(data)
+
+    print("UsedTime: " + str(time.time() - start_time))
+    return nextDirection
 
 application = bottle.default_app()
 if __name__ == '__main__':

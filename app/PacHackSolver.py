@@ -1,6 +1,7 @@
 from app.dto.PublicGameState import PublicGameState
 from app.dto.PublicPlayer import PublicPlayer
 from app.dto.ReturnDirections import ReturnDirections
+from app.dto.NearFood import NearFood
 from app.dto.HelperDTOs import PublicFields
 from app.Pathfinder import Pathfinder
 
@@ -35,38 +36,53 @@ class PacHackSolver:
         ourPosition = (int(ourPlayer['position'][0]), int(Pathfinder.reverseYCoordinate(len(gState.gameField), ourPlayer['position'][1])))
 
         target = None
+        pathToNearestFood = self.findNearestEatableFood(gState)
         if (ourPosition == self.lastFoodTargetPosition):
             self.eatedFood = self.eatedFood + 1
-        if (self.eatedFood > 4):
+        if (self.eatedFood > 4 or not pathToNearestFood):
             target = self.findHome(gState)
             print("===== Target is now HOME!")
         else:
-            target = self.findNearestEatableFood(gState)
-            self.lastFoodTargetPosition = target
+            if (type(pathToNearestFood) is NearFood):
+                self.lastFoodTargetPosition = (pathToNearestFood.x, pathToNearestFood.y)
+                target = pathToNearestFood
 
         if (self.isPositionInHome(ourPosition)):
             print("We are Home")
             self.eatedFood = 0
         pathfinder = Pathfinder()
+        if (type(target) is NearFood):
+            path = target.path
+        else:
 
-        path = pathfinder.find_path_astar(pathfinder.game2Maze(gState), ourPosition, target)
+            path = pathfinder.find_path_astar(pathfinder.game2Maze(gState), ourPosition, target)
         print("Target path: " + str(path))
         return ReturnDirections.getDirectionForShortcut(path[0])
 
     def findNearestEatableFood(self, gState):
-        # TODO: better?
+        foods = []
+        pathfinder = Pathfinder()
+        generatedMaze = pathfinder.game2Maze(gState)
+        ourPlayer = gState.publicPlayers[gState.agent_id]
+        ourPosition = (int(ourPlayer['position'][0]), int(Pathfinder.reverseYCoordinate(len(gState.gameField), ourPlayer['position'][1])))
+
         if (self.isLeftOurHomeSide):
             for x in range(self.gameFieldsSplitPoint, len(gState.gameField[0])):
                 for y in range(len(gState.gameField)):
                     if (PublicFields.FOOD == gState.gameField[y][x]):
-                        return (x, y)
+                        food = NearFood(x, y, pathfinder.find_path_astar(generatedMaze, ourPosition, (x,y)))
+                        if (food.path is not None):
+                            foods.append(food)
         else:
-            for x in reversed(range(0, self.gameFieldsSplitPoint - 1)):
+            for x in range(0, self.gameFieldsSplitPoint - 1):
                 for y in range(len(gState.gameField)):
                     if (PublicFields.FOOD == gState.gameField[y][x]):
-                        return (x, y)
-        print("NO FOOD FOUND!!!")
-        return None
+                        food = NearFood(x, y, pathfinder.find_path_astar(generatedMaze, ourPosition, (x,y)))
+                        if (food.path is not None):
+                            foods.append(food)
+        if (not foods):
+            return None
+        return min(foods, key=lambda x:len(x.path))
 
     def findHome(self, gState):
         # TODO: better?
