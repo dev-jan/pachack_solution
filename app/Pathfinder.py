@@ -7,8 +7,7 @@ class Pathfinder:
     #  1 = Impossible field (wall)
     #  example for position start = (1, 1)
     def find_path_astar(self, maze, start, goal):
-        print("Start: " + str(start))
-        print("End: " + str(goal))
+        print("Goal: " + str(goal))
         start = (start[1], start[0])
         goal = (goal[1], goal[0])
         pr_queue = []
@@ -45,11 +44,6 @@ class Pathfinder:
                 }
                 maze[newY].append(switcher.get(field, 1))
             newY = newY + 1
-        print("MAZE: ")
-        for y in range(len(maze)):
-            for x in range(len(maze[y])):
-                print(maze[y][x], end =" ")
-            print("")
         return maze
 
     def maze2graph(self, maze):

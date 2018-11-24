@@ -7,17 +7,18 @@ from app.dto.PublicPlayer import PublicPlayer
 from app.dto.ReturnDirections import ReturnDirections
 from app.PacHackSolver import PacHackSolver
 
-solver = PacHackSolver()
+class State:
+    solver = PacHackSolver()
 
 @bottle.post('/start')
 def start():
-    solver = PacHackSolver()
+    State.solver = PacHackSolver()
     return "SoVollFancy"
 
 @bottle.post('/chooseAction')
 def move():
     data = PublicGameState(ext_dict=bottle.request.json)
-    return solver.getNextDirection(data)
+    return State.solver.getNextDirection(data)
 
 application = bottle.default_app()
 if __name__ == '__main__':
