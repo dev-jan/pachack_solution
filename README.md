@@ -1,39 +1,61 @@
-# snakehack-python
+# PacHack solution "1. Platz"
 
-A simple snakehack written in Python.
+This AI-bot was developed for the "Pac-hack" hackathon (organised by STAIR - the student 
+organization at HSLU). This bot win the first place :trophy:
 
-This AI client uses the [bottle web framework](http://bottlepy.org/docs/dev/index.html) to serve requests and the [gunicorn web server](http://gunicorn.org/) for running bottle on Heroku. Dependencies are listed in [requirements.txt](requirements.txt).
+![Screenshot PacHack](screenshot.png)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+The logic of the bot is based on the well-known shortest path algorithm A* (Explained here:
+http://bryukh.com/labyrinth-algorithms/).
 
-#### You will need...
+Authors of the bot:
+ - Brian Boss ([@Lextum](https://github.com/Lextum))
+ - Jan Bucher ([@dev-jan](https://github.com/dev-jan))
+
+Special thanks to the members of STAIR for organizing this amazing hackathon!
+
+_Disclaimer: This bot was implemented in just one day at a hackathon, don't expect the
+code to follow all clean code standards_ :poop:
+
+#### Requirements
 
 * a working Python 3.6 development environment ([getting started guide](http://hackercodex.com/guide/python-development-environment-on-mac-osx/))
 * experience [deploying Python apps to Heroku](https://devcenter.heroku.com/articles/getting-started-with-python#introduction)
 * [pip](https://pip.pypa.io/en/latest/installing.html) to install Python dependencies
 
-## Running the Snake Locally
+## Running the PacHack game locally
 
-1) [Fork this repo](https://github.com/stair-ch/snakehack-python/fork).
-
-2) Clone repo to your development environment:
+1) Clone repo to your development environment:
 ```
-git clone git@github.com:username/snakehack-python.git
+git clone git@github.com:dev-jan/pachack_solution.git
 ```
 
-3) Install dependencies using [pip](https://pip.pypa.io/en/latest/installing.html):
+2) Install dependencies using [pip](https://pip.pypa.io/en/latest/installing.html):
 ```
 pip install -r requirements.txt
 ```
 
-4) Run local server:
+3) Run local server:
 ```
-python app/main.py
+python3 -m app
 ```
 
-5) Test client in your browser: [http://localhost:8080](http://localhost:8080).
+4) Test client in your browser: [http://localhost:8080](http://localhost:8080).
 
-## Deploying to Heroku
+5) Download the game client to host a new game from the STAIR repo:
+https://github.com/stairch/hslu_18hs_stair_pachack_python_local_game (this bot only works
+with the version 0.7 of the pachack game).
+
+6) Configurate the bots used by the game in the settings.ini file. Example to run the
+local bot against the STAIR bot:
+```
+[RedTeam]
+members = http://localhost:8080
+[BlueTeam]
+members = https://pachack-stairbot.herokuapp.com
+```
+
+## Deploying bot to Heroku
 
 1) Create a new Heroku app (On Windows use Commandline or PowerShell):
 ```
