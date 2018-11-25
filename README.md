@@ -1,7 +1,7 @@
 # PacHack solution "1. Platz"
 
-This AI-bot was developed for the "Pac-hack" hackathon (organised by STAIR - the student 
-organization at HSLU). This bot win the first place :trophy:
+This AI-bot was developed for the "PacHack" hackathon (organised by STAIR - the student 
+organization at HSLU). This bot won the first place :trophy:
 
 ![Screenshot PacHack](screenshot.png)
 
